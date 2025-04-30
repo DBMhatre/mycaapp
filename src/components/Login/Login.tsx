@@ -1,12 +1,12 @@
 import React, { FC, useState } from 'react'
-import { View, Text, TouchableOpacity, Image, ToastAndroid, ScrollView, ActivityIndicator, Dimensions, Linking, Modal } from 'react-native'
+import { View, Text, Alert, TouchableOpacity, Image, ToastAndroid, ScrollView, ActivityIndicator, Dimensions, Linking, Modal } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import HeaderSVG from '../../../assets/svg/HeaderSVG.svg'
 import styles from './LoginStyles';
 import { Button } from '@rneui/base';
 import Header from '../../common/StyledComponents/Header';
 import { Input } from '@rneui/themed';
-import OTPInputView from '@twotalltotems/react-native-otp-input'
+
 import colours from '../../common/constants/styles.json'
 import Svg, { Path } from 'react-native-svg';
 import LoginImage from '../../../assets/images/LoginScreenImage.png'
@@ -22,6 +22,7 @@ import CheckBox from 'expo-checkbox'
 import Pdf from 'react-native-pdf';
 import Close from '../../../assets/svg/close';
 import CloseReel from '../../../assets/svg/closeReel';
+import KeyboardAvoidingWrapper from '../../common/KeyboardAvoidingWrapper';
 
 interface LoginProps { }
 
@@ -53,14 +54,17 @@ const Login: FC<LoginProps> = () => {
                     navigation.navigate('OTP');
                     // Proceed to the next step
                 } else if (response.data.status === 404) {
-                    ToastAndroid.show("User does not exist or User is inactive. Contact Superadmin", ToastAndroid.LONG);
+                    //ToastAndroid.show("User does not exist or User is inactive. Contact Superadmin", ToastAndroid.LONG);
+                    Alert.alert("User does not exist or User is inactive. Contact Superadmin");
                 }
                 else if(response.data.status === 500) {
-                    ToastAndroid.show("You don't have access as health worker", ToastAndroid.LONG);
+                    //ToastAndroid.show("You don't have access as health worker", ToastAndroid.LONG);
+                    Alert.alert("You don't have access as health worker");
                     setIsLoading(false);
                 }
             } catch (error) {
-                ToastAndroid.show("Something Went Wrong!", ToastAndroid.SHORT);
+                // ToastAndroid.show("Something Went Wrong!", ToastAndroid.SHORT);
+                Alert.alert("Something Went Wrong!");
                 console.error("An error occurred:", error);
             }
         }
@@ -83,6 +87,7 @@ const Login: FC<LoginProps> = () => {
     }
 
     return (
+        <KeyboardAvoidingWrapper>
         <View style={{ flex: 1, backgroundColor: colours['theme-backgroung-color'] }}>
             <Header
                 title={'Login'}
@@ -178,6 +183,7 @@ const Login: FC<LoginProps> = () => {
                 />
             </Modal>
         </View>
+        </KeyboardAvoidingWrapper>
     )
 }
 

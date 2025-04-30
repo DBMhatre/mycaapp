@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, Button, Image, ScrollView, Text, ToastAndroid, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Alert, Button, Image, ScrollView, Text, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import Header from '../../../common/StyledComponents/Header';
 import colours from '../../../common/constants/styles.json'
 import { useNavigation } from '@react-navigation/native';
-import OTPInputView from '@twotalltotems/react-native-otp-input';
 import styles from '../LoginStyles';
 import Svg, { Path } from 'react-native-svg';
 import OTPImage from '../../../../assets/images/online-doctor-consultation.png'
@@ -15,6 +14,8 @@ import { MMKV } from 'react-native-mmkv';
 import translate from '../../../context/Translations';
 import Forward from '../../../../assets/svg/forward';
 import Back from '../../../../assets/svg/back';
+import { OtpInput } from "react-native-otp-entry";
+import KeyboardAvoidingWrapper from '../../../common/KeyboardAvoidingWrapper';
 
 
 const VerifyOTP = () => {
@@ -89,14 +90,17 @@ const VerifyOTP = () => {
                 }
             } catch (error) {
                 // Handle any errors here
+                Alert.alert("An unexpected error occured");
                 console.error("An error occurred:", error);
             }
         } else {
-            ToastAndroid.show("OTP Entered is not correct!", ToastAndroid.SHORT);
+            // ToastAndroid.show("OTP Entered is not correct!", ToastAndroid.SHORT);
+            Alert.alert("OTP Entered is not correct!");
         }
     }
 
     return (
+        <KeyboardAvoidingWrapper>
         <View style={{ flex: 1, backgroundColor: colours['theme-backgroung-color'] }}>
             <Header
                 title={'Verify OTP'}
@@ -127,14 +131,14 @@ const VerifyOTP = () => {
 
                 <View style={styles.verifyOTPScreenInput}>
                     <View style={styles.verifyOTPInputButtons}>
-                        <OTPInputView
-                            pinCount={5}
-                            autoFocusOnLoad={false}
-                            code={otpNumber}
-                            onCodeChanged={(value: any) => setOtpNumber(value)}
-                            style={{ width: '75%', marginTop: 100 }}
-                            codeInputFieldStyle={styles.OTPFieldStyle}
-                            codeInputHighlightStyle={styles.OTPHightLightStyle}
+                        <OtpInput 
+                            numberOfDigits={5} 
+                            type="numeric"
+                            theme={{
+                                containerStyle: { width: '75%', marginTop: 100 },
+                                pinCodeContainerStyle: styles.OTPFieldStyle,
+                            }}
+                            onTextChange={(text) => setOtpNumber(text)} 
                         />
                         <View style={{
                             display: 'flex',
@@ -171,6 +175,7 @@ const VerifyOTP = () => {
                 </View>
             </ScrollView>
         </View>
+        </KeyboardAvoidingWrapper>
     )
 }
 
